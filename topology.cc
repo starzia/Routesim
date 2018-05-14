@@ -64,7 +64,8 @@ deque<Node*> *Topology::GetNeighbors(const Node *n)
 
   for (deque<Link*>::iterator i=temp->begin();
 	   i!=temp->end(); ++i) { 
-    nodes->push_back(FindMatchingNode(&Node((*i)->GetDest(),0,0,0)));
+    Node x = Node((*i)->GetDest(),0,0,0);
+    nodes->push_back(FindMatchingNode(&x));
   }
   return nodes;
 }
@@ -142,7 +143,8 @@ void Topology::ChangeLink(const Link *l)
   if (i!=links.end()) { 
     **i=*l;
   }
-  Node *n=FindMatchingNode(&Node(l->GetSrc(),0,0,0));
+  Node x = Node(l->GetSrc(),0,0,0);
+  Node *n=FindMatchingNode(&x);
   n->LinkHasBeenUpdated(l);
 }
 
@@ -230,7 +232,8 @@ void Topology::CollectShortestPathTreeLinks(const Node &src, deque<Link> &links)
     if (closest!=src.GetNumber()) { 
       links.push_back(Link(pred[closest],closest,0,0,0));
     }
-    deque<Link*> *adj= GetOutgoingLinks(FindMatchingNode(&Node(closest,0,0,0)));
+    Node x = Node(closest,0,0,0);
+    deque<Link*> *adj= GetOutgoingLinks(FindMatchingNode(&x));
     for (deque<Link*>::const_iterator i=adj->begin();i!=adj->end();++i) {
       unsigned dest=(**i).GetDest();
       double dist=(**i).GetLatency();

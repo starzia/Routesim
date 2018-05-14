@@ -329,9 +329,10 @@ void SimulationContext::SendToNeighbors(const Node *src, const RoutingMessage *m
 {
   deque<Link*> *ll=GetOutgoingLinks(src);
   for (deque<Link*>::const_iterator i=ll->begin();i!=ll->end();++i) {
+    Node x = Node((*i)->GetDest(),0,0,0);
     PostEvent(new Event(GetTime()+(*i)->GetLatency(),
 			ROUTING_MESSAGE_ARRIVAL,
-			FindMatchingNode(&Node((*i)->GetDest(),0,0,0)),
+			FindMatchingNode(&x),
 			(void*)m));
   }
   delete ll;
@@ -339,7 +340,8 @@ void SimulationContext::SendToNeighbors(const Node *src, const RoutingMessage *m
 
 void SimulationContext::SendToNeighbor(const Node *src, const Node *dest, const RoutingMessage *m)
 {
-  Link *l = FindMatchingLink(&Link(src->GetNumber(),dest->GetNumber(),0,0,0));
+  Link x = Link(src->GetNumber(),dest->GetNumber(),0,0,0);
+  Link *l = FindMatchingLink(&x);
 
   PostEvent(new Event(GetTime()+l->GetLatency(),
 		      ROUTING_MESSAGE_ARRIVAL,
