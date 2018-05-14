@@ -4,3 +4,13 @@ Simple event-driven simulator for link-state and distance vector routing.
 
 (c) 2003 Peter A. Dinda
 
+PREREQUISITES
+
+Graphviz (including the dotty commandline tool).
+
+QUICK START INSTRUCTIONS:
+
+$ touch .dependencies
+$ make
+$ make TYPE=GENERIC
+$ ./routesim demo.topo demo.event
