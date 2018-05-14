@@ -7,14 +7,14 @@
 #include "link.h"
 
 #if defined(GENERIC)
-struct RoutingMessage {
+class RoutingMessage {
  public:
   ostream & Print(ostream &os) const;
 };
 #endif
 
 #if defined(LINKSTATE)
-struct RoutingMessage {
+class RoutingMessage {
 
   RoutingMessage();
   RoutingMessage(const RoutingMessage &rhs);
@@ -25,7 +25,7 @@ struct RoutingMessage {
 #endif
 
 #if defined(DISTANCEVECTOR)
-struct RoutingMessage {
+class RoutingMessage {
 
   RoutingMessage();
   RoutingMessage(const RoutingMessage &rhs);

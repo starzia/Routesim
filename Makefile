@@ -1,6 +1,6 @@
 AR = ar
 CXX = g++
-CXXFLAGS = -g -ggdb -Wall
+CXXFLAGS = -g -ggdb -Wall -Wno-address-of-temporary
 LDFLAGS = 
 
 TYPE = GENERIC
