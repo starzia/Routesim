@@ -11,6 +11,6 @@ Graphviz (including the dotty commandline tool).
 QUICK START INSTRUCTIONS:
 
 $ touch .dependencies
-$ make
+$ make depend
 $ make TYPE=GENERIC
 $ ./routesim demo.topo demo.event
