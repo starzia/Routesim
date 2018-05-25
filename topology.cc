@@ -198,6 +198,7 @@ ostream &Topology::Print(ostream &os) const
 //
 // This is totally disgusting
 //
+/** @param links is initially empty and will store the result */
 void Topology::CollectShortestPathTreeLinks(const Node &src, deque<Link> &links) 
 {
   vector<double> distance(nodes.size());
@@ -205,9 +206,11 @@ void Topology::CollectShortestPathTreeLinks(const Node &src, deque<Link> &links)
   deque<unsigned> visited;
   deque<unsigned> unvisited;
  
-
+  // initialize the distance vector to "infinity"
   for (deque<Node*>::const_iterator i=nodes.begin();i!=nodes.end();++i) {
     unvisited.push_back((**i).GetNumber());
+    // Invent a new "dummy" node N+1 which is initially the predecessor of all nodes.
+    // At the end, any unreachable nodes will still having this precedessor.
     pred[(**i).GetNumber()]=nodes.size()+1;
     if ((**i).GetNumber()!=src.GetNumber()) {
       distance[(**i).GetNumber()]=99e99;
@@ -216,7 +219,9 @@ void Topology::CollectShortestPathTreeLinks(const Node &src, deque<Link> &links)
     }
   }
   
+  // visit each node
   while (unvisited.size()>0) {
+    // visit the node that is currently closest to the source
     double curmin=100e99;
     deque<unsigned>::iterator c;
     unsigned closest;
@@ -229,14 +234,17 @@ void Topology::CollectShortestPathTreeLinks(const Node &src, deque<Link> &links)
     closest=*c;
     unvisited.erase(c);
     visited.push_back(closest);
+
+    // add edge to this node to the shortest path tree.
     if (closest!=src.GetNumber()) { 
       links.push_back(Link(pred[closest],closest,0,0,0));
     }
+    // relax each outgoing edge from the node we're visiting
     Node x = Node(closest,0,0,0);
     deque<Link*> *adj= GetOutgoingLinks(FindMatchingNode(&x));
     for (deque<Link*>::const_iterator i=adj->begin();i!=adj->end();++i) {
       unsigned dest=(**i).GetDest();
-      double dist=(**i).GetLatency();
+      double dist=(**i).GetLatency() + curmin;
       if (dist<distance[dest]) { 
 	distance[dest]=dist;
 	pred[dest]=closest;
