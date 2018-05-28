@@ -175,9 +175,12 @@ void SimulationContext::DispatchEvent(Event *e)
 }
 
 
-
-struct link_eq {
-  bool operator() ( const Link &l, const Link &r) const { return (l.GetSrc()==r.GetSrc()) && (l.GetDest()==r.GetDest()); }
+// This is just used by the map container to build a search tree.
+// It defines a consistent "total ordering" of the links.
+struct link_compare {
+  bool operator() ( const Link &l, const Link &r) const {
+    return (l.GetSrc()<r.GetSrc()) || (l.GetSrc()==r.GetSrc() && l.GetDest()<r.GetDest());
+  }
 };
 
 
@@ -189,7 +192,7 @@ void SimulationContext::WriteShortestPathTreeDot(const Node *src, const string &
     return;
   } 
   // Yes, this is hideously slow
-  map<Link, int, link_eq> treelinks;
+  map<Link, int, link_compare> treelinks;
   deque<Link> path;
   for (deque<Node*>::const_iterator i=nodes.begin();i!=nodes.end();++i) { 
     path.clear();
@@ -211,7 +214,7 @@ void SimulationContext::WriteShortestPathTreeDot(const Node *src, const string &
   for (deque<Link>::const_iterator i=realtree.begin(); i!=realtree.end();++i) {
     fprintf(out,"%u -> %u [ color=blue ];\n",(*i).GetSrc(),(*i).GetDest());
   }
-  for (map<Link,int,link_eq>::const_iterator i=treelinks.begin();i!=treelinks.end();++i) {
+  for (map<Link,int,link_compare>::const_iterator i=treelinks.begin();i!=treelinks.end();++i) {
     Link l = (*i).first;
     fprintf(out,"%u -> %u [ color=red ];\n",l.GetSrc(),l.GetDest());
     bool found=false;
